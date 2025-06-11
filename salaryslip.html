@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Salary Slip</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      background: #f0f4f8;
+    }
+    .form-section {
+      border: 1px solid #ccc;
+      padding: 25px;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    .buttons {
+      text-align: center;
+      margin-top: 25px;
+    }
+    button {
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007BFF;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .slip {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      border: 1px solid #000;
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    .center {
+      text-align: center;
+    }
+    .right {
+      text-align: right;
+    }
+    
+  </style>
+ 
+</head>
+<body>
+  <div class="form-section">
+<center><h1> Pay Slip Generator </h1></center>
+<hr>
+</br>
+    <div class="form-grid m-2">
+      <div class="form-group"><label>Employee Name:</label><input type="text" id="empName"></div>
+      <div class="form-group"><label>Employee Code:</label><input type="text" id="empCode"></div>
+      <div class="form-group"><label>Father's Name:</label><input type="text" id="fatherName"></div>
+      <div class="form-group"><label>PAN No.:</label><input type="text" id="panNo" onkeyup="enforcePANUppercase()"></div>
+      <div class="form-group">
+        <label>Designation:</label>
+        <select id="designation">
+          <option>---Select---</option>
+	  <option>Operator</option>
+          <option>Field Assistant</option>
+          <option>Community Facilitator</option>
+          <option>Office Assistant</option>
+          <option>Project Manager</option>
+          <option>Finance Manager</option>
+          <option>Program Manager</option>
+          <option>Monitoring & Evaluation Manager</option>
+          <option>HR Manager</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Department:</label>
+        <select id="department">
+	  <option>---Select---</option>
+          <option>Operations</option>
+          <option>Finance</option>
+          <option>Human Resources</option>
+          <option>Monitoring & Evaluation</option>
+          <option>Field Management</option>
+          <option>IT Support</option>
+          <option>Administration</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Date of Joining:</label><input type="date" id="doj"></div>
+      <div class="form-group"><label>Bank A/c no.:</label><input type="text" id="bankAcc"></div>
+      <div class="form-group"><label>Bank Name:</label><input type="text" id="bankName"></div>
+      <div class="form-group"><label>EPF A/c no.:</label><input type="text" id="epf"></div>
+      <div class="form-group"><label>ESIC A/c no.:</label><input type="text" id="esic"></div>
+      <div class="form-group">
+        <label>Salary Month:</label>
+        <select id="month">
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Gross Salary:</label><input type="number" id="gross"></div>
+      <div class="form-group"><label>Month Days:</label><input type="number" id="monthDays" oninput="autoLeave()"></div>
+      <div class="form-group"><label>Paid Days:</label><input type="number" id="paidDays" oninput="autoLeave()"></div>
+      <div class="form-group"><label>Leave Taken:</label><input type="number" id="leaves" readonly></div>
+      <div class="form-group">
+        <label>Metro City (for 50% HRA)?</label>
+        <select id="isMetro">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+          </div>
+    <div class="buttons">
+      <button onclick="generateSlip()" style="background-color:#28a745;">Generate Slip</button>
+      <button onclick="location.reload()" style="background-color:#dc3545;">Refresh</button>
+    </div>
+  </div>
+  <div id="generatedSlip" class="slip"></div>
+</body>
+   <script>
+    function autoLeave() {
+      const month = parseInt(document.getElementById("monthDays").value);
+      const present = parseInt(document.getElementById("paidDays").value);
+      if (!isNaN(month) && !isNaN(present)) {
+        const leave = Math.max(0, month - present);
+        document.getElementById("leaves").value = leave;
+      }
+    }
+
+    function enforcePANUppercase() {
+      const panField = document.getElementById("panNo");
+      panField.value = panField.value.toUpperCase();
+    }
+
+    window.onload = function() {
+      document.getElementById("epf").value = "N/A";
+      document.getElementById("esic").value = "N/A";
+    }
+
+    function generateSlip() {
+  const slip = document.getElementById("generatedSlip");
+  const empName = document.getElementById("empName").value;
+  const empCode = document.getElementById("empCode").value;
+  const fatherName = document.getElementById("fatherName").value;
+  const panNo = document.getElementById("panNo").value;
+  const designation = document.getElementById("designation").value;
+  const department = document.getElementById("department").value;
+  const doj = document.getElementById("doj").value;
+  const bankAcc = document.getElementById("bankAcc").value;
+  const bankName = document.getElementById("bankName").value;
+  const epf = document.getElementById("epf").value;
+  const esic = document.getElementById("esic").value;
+  const month = document.getElementById("month").value;
+  const gross = parseFloat(document.getElementById("gross").value) || 0;
+  const paidDays = parseInt(document.getElementById("paidDays").value) || 0;
+  const monthDays = parseInt(document.getElementById("monthDays").value) || 1;
+  const leaves = parseInt(document.getElementById("leaves").value) || 0;
+  const isMetro = document.getElementById("isMetro").value;
+
+  const basicSalary = gross * 0.5;
+  const effectiveGross = (gross / monthDays) * paidDays;
+  const proratedBasic = (basicSalary / monthDays) * paidDays;
+  const hra = proratedBasic * (isMetro === "yes" ? 0.5 : 0.4);
+  const conveyance = paidDays > 0 ? 1600 : 0;
+  const medical = paidDays > 0 ? 1250 : 0;
+  let special = effectiveGross - (proratedBasic + hra + conveyance + medical);
+  if (special < 0) special = 0;
+  const netPay = proratedBasic + hra + conveyance + medical + special;
+
+  slip.innerHTML = `
+<style>
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #generatedSlip, #generatedSlip * {
+          visibility: visible;
+        }
+        #generatedSlip {
+          position: absolute;
+          left: 0;
+          top: 0;
+	  right: 0;
+          width: 93%;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+<div>
+    <h2 class="center">Stepforadder Technologies Private Limited</h2>
+    <p class="center">A-40, 422A, 4th Floor, Tower-B, Sector-62, Noida-201301 UP India</p>
+    <h3 class="center">Pay Slip for the month of ${month}</h3>
+    <table>
+      <tr><th>Employee Name</th><td>${empName}</td><th>Employee Code</th><td>${empCode}</td></tr>
+      <tr><th>Father's Name</th><td>${fatherName}</td><th>PAN No.</th><td>${panNo}</td></tr>
+      <tr><th>Designation</th><td>${designation}</td><th>Department</th><td>${department}</td></tr>
+      <tr><th>Date of Joining</th><td>${doj}</td><th>Bank A/c No.</th><td>${bankAcc}</td></tr>
+      <tr><th>Bank Name</th><td>${bankName}</td><th>Mode of Payment</th><td>Bank Transfer</td></tr>
+      <tr><th>EPF A/c No.</th><td>${epf}</td><th>ESIC A/c No.</th><td>${esic}</td></tr>
+      <tr><th>Gross Salary</th><td>${gross.toFixed(2)}</td><th>Paid Days</th><td>${paidDays}</td></tr>
+      <tr><th>Month Days</th><td>${monthDays}</td><th>Leave Taken</th><td>${leaves}</td></tr>
+    </table>
+</br>
+        <table>
+      <thead><tr><th>Earnings</th><th>Amount (₹)</th><th>Deductions</th><th>Amount (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>Basic Pay</td><td>${proratedBasic.toFixed(2)}</td><td>EPF</td><td>0.00</td></tr>
+        <tr><td>HRA</td><td>${hra.toFixed(2)}</td><td>ESIC Employee</td><td>0.00</td></tr>
+        <tr><td>Conveyance</td><td>${conveyance.toFixed(2)}</td><td>TDS</td><td>0.00</td></tr>
+        <tr><td>Medical</td><td>${medical.toFixed(2)}</td><td>ESIC Employer</td><td>0.00</td></tr>
+        <tr><td>Special Allowance</td><td>${special.toFixed(2)}</td><td>Professional Tax</td><td>0.00</td></tr>
+        <tr><th>Total Earnings</th><th>${netPay.toFixed(2)}</th><th>Total Deductions</th><th>0.00</th></tr>
+      </tbody>
+    </table>
+    <h3 class="left">Net Pay: ₹${netPay.toFixed(2)}</h3>
+</br>
+    <p class="right">Authorised Signatory</p></div>
+    <div class="center no-print">
+      <button onclick="window.print()" style="background-color:#17a2b8;">Print </button>
+    </div>
+  `;
+
+  slip.style.display = 'block';
+  slip.scrollIntoView({ behavior: 'smooth' });
+}
+
+  </script>
+</html>
