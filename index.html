@@ -125,6 +125,11 @@
         </select>
       </div>
       <div class="form-group"><label>Date of Joining:</label><input type="date" id="doj"></div>
+      <div class="form-group"><label>Mode of Payment</label>
+       <select id="Mode">
+          <option>Cash</option><option>Bank</option>
+        </select>
+      </div>
       <div class="form-group"><label>Bank A/c no.:</label><input type="text" id="bankAcc"></div>
       <div class="form-group"><label>Bank Name:</label><input type="text" id="bankName"></div>
       <div class="form-group"><label>EPF A/c no.:</label><input type="text" id="epf"></div>
@@ -145,8 +150,9 @@
       <div class="form-group">
         <label>Metro City (for 50% HRA)?</label>
         <select id="isMetro">
+	   <option value="no">No</option>
           <option value="yes">Yes</option>
-          <option value="no">No</option>
+         
         </select>
       </div>
           </div>
@@ -196,6 +202,7 @@
   const monthDays = parseInt(document.getElementById("monthDays").value) || 1;
   const leaves = parseInt(document.getElementById("leaves").value) || 0;
   const isMetro = document.getElementById("isMetro").value;
+  const Mode = document.getElementById("Mode").value;
 
   const basicSalary = gross * 0.5;
   const effectiveGross = (gross / monthDays) * paidDays;
@@ -229,8 +236,8 @@
       }
     </style>
 <div>
-    <h2 class="center">Creative Groups Private Limited</h2>
-    <p class="center">A-40, 422A, 4th Floor, Tower-B, Sector-62, Noida-201301 UP India</p>
+    <h2 class="center">Creative Group</h2>
+    <p class="center">136A/D, S K Puri, Boring Road, Patna, India</p>
     <h3 class="center">Pay Slip for the month of ${month}</h3>
     <table>
       <tr><th>Employee Name</th><td>${empName}</td><th>Employee Code</th><td>${empCode}</td></tr>
