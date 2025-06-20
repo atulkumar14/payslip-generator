@@ -204,10 +204,10 @@
   const isMetro = document.getElementById("isMetro").value;
   const Mode = document.getElementById("Mode").value;
 
-  const basicSalary = gross * 0.5;
+  const basicSalary = gross * 0.75;
   const effectiveGross = (gross / monthDays) * paidDays;
   const proratedBasic = (basicSalary / monthDays) * paidDays;
-  const hra = proratedBasic * (isMetro === "yes" ? 0.5 : 0.4);
+  const hra = proratedBasic * (isMetro === "yes" ? 0.3 : 0.3);
   const conveyance = paidDays > 0 ? 1600 : 0;
   const medical = paidDays > 0 ? 1250 : 0;
   let special = effectiveGross - (proratedBasic + hra + conveyance + medical);
