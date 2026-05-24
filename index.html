@@ -110,7 +110,7 @@
          
         </select>
       </div>
-      <div class="form-group"><label>Date of Joining:</label><input type="date"  value="11-08-2025" id="doj"></div>
+      <div class="form-group"><label>Date of Joining:</label><input value="11-08-2025" id="doj"></div>
       <div class="form-group"><label>Mode of Payment</label>
        <select id="Mode">
           <option>Cash</option><option>Bank</option>
@@ -194,10 +194,10 @@
   const basicSalary = gross * 0.65;
   const effectiveGross = (gross / monthDays) * paidDays;
   const proratedBasic = (basicSalary / monthDays) * paidDays;
-  const hra = proratedBasic * (isMetro === "yes" ? 0.27 : 0.27);
+  const hra = proratedBasic * (isMetro === "yes" ? 0 : 0);
   const conveyance = paidDays > 0 ? 3100 : 0;
   const medical = LR > 500000 ? LR * 0.02 : LR * 0.01;
-  let special = effectiveGross - (proratedBasic + hra + conveyance + medical);
+  let special = effectiveGross - (proratedBasic + hra + conveyance);
   if (special < 0) special = 0;
   const netPay = proratedBasic + hra + conveyance + medical + special;
 
