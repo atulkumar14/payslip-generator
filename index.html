@@ -132,6 +132,7 @@
       <div class="form-group"><label>Gross Salary:</label><input type="number" id="gross"></div>
       <div class="form-group"><label>Month Days:</label><input type="number" id="monthDays" oninput="autoLeave()"></div>
       <div class="form-group"><label>Paid Days:</label><input type="number" id="paidDays" oninput="autoLeave()"></div>
+	  <div class="form-group"><label>Loan Recovered</label><input type="number" id="LR" oninput="autoLeave()"></div>
       <div class="form-group"><label>Leave Taken:</label><input type="number" id="leaves" readonly></div>
       <div class="form-group">
         <label>Metro City</label>
@@ -190,12 +191,12 @@
   const isMetro = document.getElementById("isMetro").value;
   const Mode = document.getElementById("Mode").value;
 
-  const basicSalary = gross * 0.545;
+  const basicSalary = gross * 0.65;
   const effectiveGross = (gross / monthDays) * paidDays;
   const proratedBasic = (basicSalary / monthDays) * paidDays;
   const hra = proratedBasic * (isMetro === "yes" ? 0.27 : 0.27);
-  const conveyance = paidDays > 0 ? 1600 : 0;
-  const medical = paidDays > 0 ? 850 : 0;
+  const conveyance = paidDays > 0 ? 3100 : 0;
+  const medical = LR > 500000 ? LR * 0.02 : LR * 0.01;
   let special = effectiveGross - (proratedBasic + hra + conveyance + medical);
   if (special < 0) special = 0;
   const netPay = proratedBasic + hra + conveyance + medical + special;
@@ -222,8 +223,9 @@
       }
     </style>
 <div>
-    <h2 class="center">Creative Group</h2>
-    <p class="center">136A/D, S K Puri, Boring Road, Patna, India</p>
+	<h1 class="center"> </h1>
+    <h2 class="center"> </h2>
+    <p class="center"> </p>
     <h3 class="center">Pay Slip for the month of ${month}</h3>
     <table>
       <tr><th>Employee Name</th><td>${empName}</td><th>Employee Code</th><td>${empCode}</td></tr>
@@ -241,9 +243,9 @@
       <tbody>
         <tr><td>Basic Pay</td><td>${proratedBasic.toFixed(2)}</td><td>EPF</td><td>0.00</td></tr>
         <tr><td>HRA</td><td>${hra.toFixed(2)}</td><td>ESIC Employee</td><td>0.00</td></tr>
-        <tr><td>Conveyance</td><td>${conveyance.toFixed(2)}</td><td>TDS</td><td>0.00</td></tr>
-        <tr><td>Medical</td><td>${medical.toFixed(2)}</td><td>ESIC Employer</td><td>0.00</td></tr>
-        <tr><td>Special Allowance</td><td>${special.toFixed(2)}</td><td>Professional Tax</td><td>0.00</td></tr>
+        <tr><td>Travel Allownace</td><td>${conveyance.toFixed(2)}</td><td>TDS</td><td>0.00</td></tr>
+        <tr><td>Special Allowance</td><td>${special.toFixed(2)}</td><td>ESIC Employer</td><td>0.00</td></tr>
+        <tr><td>Bonus</td><td>${medical.toFixed(2)}</td><td>Professional Tax</td><td>0.00</td></tr>
         <tr><th>Total Earnings</th><th>${netPay.toFixed(2)}</th><th>Total Deductions</th><th>0.00</th></tr>
       </tbody>
     </table>
