@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Loan Recovery Payslip Generator</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;padding:20px}
+.form-box,.slip{background:#fff;padding:15px;max-width:1000px;margin:auto}
+label{font-weight:bold;display:block;margin-top:10px}
+input,textarea,select{width:100%;padding:8px;box-sizing:border-box}
+button{padding:10px 16px;margin-top:15px}
+.slip{display:none}
+.payslip{border:2px solid #000}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #000;padding:4px;font-size:12px}
+.center{text-align:center}
+.right{text-align:right}
+.company{font-size:18px;font-weight:bold}
+.net{font-size:18px;font-weight:bold;padding:8px}
+.headerbox{padding:10px;text-align:center;border-bottom:1px solid #000}
+@media print{
+.form-box,.noprint{display:none}
+.slip{display:block!important}
+body{background:#fff;padding:0}
+}
+</style>
+</head>
+<body>
+
+<div class="form-box">
+<h2>Loan Recovery Payslip Generator</h2>
+
+<label>Company Name</label>
+<input id="companyName">
+
+<label>Company Address</label>
+<textarea id="companyAddress"></textarea>
+
+<label>Mobile Number</label>
+<input id="mobile">
+
+<label>Email Address</label>
+<input id="email">
+
+<label>Proprietor Name</label>
+<input id="proprietor">
+
+<label>Salary Month</label>
+<select id="salaryMonth">
+<option>July 2025</option>
+<option>August 2025</option>
+<option>September 2025</option>
+<option>October 2025</option>
+<option>November 2025</option>
+<option>December 2025</option>
+<option>January 2026</option>
+<option>February 2026</option>
+<option>March 2026</option>
+<option>April 2026</option>
+<option>May 2026</option>
+<option>June 2026</option>
+</select>
+
+<label>Collection Incentive (₹)</label>
+<input id="incentive" type="number" value="0">
+
+<label>Employee Name</label>
+<input id="empName" value="Ankit Kumar">
+
+<label>Employee Code</label>
+<input id="empCode" value="AA/LR/2025/110">
+
+<label>PAN No</label>
+<input id="panNo" value="MVXPK6745E">
+
+<button onclick="generateSlip()">Generate Payslip</button>
+</div>
+
+<div id="generatedSlip" class="slip"></div>
+
+<script>
+function monthDays(month){
+ if(month.includes("February")) return 28;
+ if(month.includes("April")||month.includes("June")||month.includes("September")||month.includes("November")) return 30;
+ return 31;
+}
+
+function numberToWords(num){
+ const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+ const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+ function convert(n){
+   if(n<20) return a[n];
+   if(n<100) return b[Math.floor(n/10)]+' '+a[n%10];
+   if(n<1000) return a[Math.floor(n/100)]+' Hundred '+convert(n%100);
+   if(n<100000) return convert(Math.floor(n/1000))+' Thousand '+convert(n%1000);
+   if(n<10000000) return convert(Math.floor(n/100000))+' Lakh '+convert(n%100000);
+   return '';
+ }
+ return convert(num).replace(/\s+/g,' ').trim();
+}
+
+function generateSlip(){
+const company=document.getElementById('companyName').value;
+const address=document.getElementById('companyAddress').value;
+const mobile=document.getElementById('mobile').value;
+const email=document.getElementById('email').value;
+const proprietor=document.getElementById('proprietor').value;
+
+const month=document.getElementById('salaryMonth').value;
+const incentive=parseFloat(document.getElementById('incentive').value)||0;
+
+const empName=document.getElementById('empName').value;
+const empCode=document.getElementById('empCode').value;
+const pan=document.getElementById('panNo').value;
+
+const md=monthDays(month);
+
+const basic=11440,hra=3120,conv=1248,medical=832,special=4160;
+const fixed=20800;
+const net=fixed+incentive;
+
+document.getElementById('generatedSlip').innerHTML=`
+<div class="payslip">
+
+<div class="headerbox">
+<div class="company">${company}</div>
+<div>${address}</div>
+<div>Mobile: ${mobile}</div>
+<div>Email: ${email}</div>
+<div>Proprietor: ${proprietor}</div>
+</div>
+
+<table>
+<tr><td colspan="4" class="center"><b>Pay Slip for the Month of ${month}</b></td></tr>
+</table>
+
+<table>
+<tr><td><b>Employee Name</b></td><td>${empName}</td><td><b>DOJ</b></td><td>11-08-2025</td></tr>
+<tr><td><b>Employee Code</b></td><td>${empCode}</td><td><b>Mode</b></td><td>Cash</td></tr>
+<tr><td><b>Father Name</b></td><td>Sunil K Pathak</td><td><b>EPF</b></td><td>N/A</td></tr>
+<tr><td><b>PAN No</b></td><td>${pan}</td><td><b>ESIC</b></td><td>N/A</td></tr>
+<tr><td><b>Designation</b></td><td>Team Lead</td><td><b>Department</b></td><td>Loan Recovery</td></tr>
+</table>
+
+<table>
+<tr><td><b>Gross Salary</b></td><td>20,800</td><td><b>Month Days</b></td><td>${md}</td></tr>
+<tr><td><b>Paid Days</b></td><td>${md}</td><td><b>Leave Taken</b></td><td>0</td></tr>
+</table>
+
+<table>
+<tr><th>Earnings</th><th>Scale(Rs.)</th><th>Amount(Rs.)</th><th>Deductions</th><th>Scale(Rs.)</th><th>Amount(Rs.)</th></tr>
+<tr><td>Basic Pay</td><td class="right">${basic}</td><td class="right">${basic}</td><td>EPF</td><td>0</td><td>0</td></tr>
+<tr><td>HRA</td><td class="right">${hra}</td><td class="right">${hra}</td><td>ESIC</td><td>0</td><td>0</td></tr>
+<tr><td>Conveyance Allowance</td><td class="right">${conv}</td><td class="right">${conv}</td><td>TDS</td><td>0</td><td>0</td></tr>
+<tr><td>Medical Allowance</td><td class="right">${medical}</td><td class="right">${medical}</td><td></td><td></td><td></td></tr>
+<tr><td>Special Allowance</td><td class="right">${special}</td><td class="right">${special}</td><td></td><td></td><td></td></tr>
+<tr><td>Collection Incentive</td><td class="right">${incentive}</td><td class="right">${incentive}</td><td></td><td></td><td></td></tr>
+<tr><th>Total Earnings</th><th></th><th class="right">${net}</th><th>Total Deductions</th><th></th><th>0</th></tr>
+</table>
+
+<div class="net">Net Pay : ₹${net}</div>
+<div style="padding:8px">In Words : Rupees ${numberToWords(net)} Only</div>
+<div style="padding:8px">This is computer generated pay slip. No signature or stamp required.</div>
+</div>
+<button class="noprint" onclick="window.print()">Print</button>`;
+
+document.getElementById('generatedSlip').style.display='block';
+}
+</script>
+</body>
+</html>
